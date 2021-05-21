@@ -9,14 +9,39 @@ public class RegistrarVeterinarioDto {
     private String  depaveto;
     private String  lugarfveto;
 
+
     private String  especialidad;
 
+    private Integer usuarioId;
     private String  nomuser;
     private String  password;
 
+    private Integer veterinariaId;
+    private Integer tipoveteId;
+    private String  dirvete;
     private String  nomvete;
     private String  fonovete;
     private String  hdavete;
+
+    public RegistrarVeterinarioDto() {
+
+    }
+
+    public Integer getTipoveteId() {
+        return tipoveteId;
+    }
+
+    public void setTipoveteId(Integer tipoveteId) {
+        this.tipoveteId = tipoveteId;
+    }
+
+    public String getDirvete() {
+        return dirvete;
+    }
+
+    public void setDirvete(String dirvete) {
+        this.dirvete = dirvete;
+    }
 
     public Integer getVeterId() {
         return veterId;
@@ -82,6 +107,14 @@ public class RegistrarVeterinarioDto {
         this.especialidad = especialidad;
     }
 
+    public Integer getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
     public String getNomuser() {
         return nomuser;
     }
@@ -96,6 +129,14 @@ public class RegistrarVeterinarioDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getVeterinariaId() {
+        return veterinariaId;
+    }
+
+    public void setVeterinariaId(Integer veterinariaId) {
+        this.veterinariaId = veterinariaId;
     }
 
     public String getNomvete() {
