@@ -6,35 +6,36 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class RegistroMascotaDao {
 
+public class RegistroMascotaDao {
     @Autowired
     private DataSource dataSource;
     @Autowired
     private SequenceDao sequenceDao;
 
     public MascotaDto crearMascota (MascotaDto mascotaDto){
-        mascotaDto.mascoId = sequenceDao.getPrimaryKeyForTable("mascotaDto");
+        mascotaDto.setMascoId(sequenceDao.getPrimaryKeyForTable("mascota"));
         try {
             Connection con = dataSource.getConnection();
-            Statement st = con.createStatement();
-            st.execute( "INSERT INTO mascota VALUES ("
-                    + mascotaDto.mascoId +" , '"
-                    + mascotaDto.espmId +"', '"
-                    + mascotaDto.razamId +"', '"
-                    + mascotaDto.imgmId +"','"
-                    + mascotaDto.duemId +"','"
-                    + mascotaDto.nommas +"','"
-                    + mascotaDto.tamas +"','"
-                    + mascotaDto.colmas +"','"
-                    + mascotaDto.sexmas +"','"
-                    + mascotaDto.frmas +"' ) ");
+            PreparedStatement pst = con.prepareStatement("INSERT INTO mascota VALUE ?,?,?,?,?,?,?,?,?,?");
+            pst.setInt(1, mascotaDto.getMascoId());
+            pst.setInt(2,mascotaDto.getEspmId());
+            pst.setInt(3,mascotaDto.getRazamId());
+            pst.setInt(4,mascotaDto.getImgmId());
+            pst.setInt(5,mascotaDto.getDuemId());
+            pst.setString(6,mascotaDto.getNommas());
+            pst.setString(7,mascotaDto.getTamas());
+            pst.setString(8,mascotaDto.getColmas());
+            pst.setString(9,mascotaDto.getSexmas());
+            pst.setString(10,mascotaDto.getFrmas());
+            pst.executeUpdate();
+            con.close();
         }catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -49,19 +50,21 @@ public class RegistroMascotaDao {
                     "id_imagen,id_dueño,nombre_mascota,tamaño,color,sexo,fecha_registro FROM mascota" +
                         " WHERE id_mascota = " + mascoId);
                     if (rs.next()){
-                        result.mascoId = rs.getInt("id_mascota");
-                        result.espmId = rs.getInt("id_especie");
-                        result.razamId = rs.getInt("id_raza");
-                        result.imgmId = rs.getInt("id_imagen");
-                        result.duemId = rs.getInt("id_dueño");
-                        result.nommas = rs.getString("nombre_mascota");
-                        result.tamas = rs.getString("tamaño");
-                        result.colmas = rs.getString("color");
-                        result.sexmas = rs.getString("sexo");
-                        result.frmas = rs.getString("fecha_registro");
+                        result.setMascoId(rs.getInt("id_mascota"));
+                        result.setEspmId(rs.getInt("id_especie")) ;
+                        result.setRazamId(rs.getInt("id_raza"));
+                        result.setImgmId(rs.getInt("id_imagen"));
+                        result.setDuemId(rs.getInt("id_dueño"));
+                        result.setNommas(rs.getString("nombre_mascota"));
+                        result.setTamas(rs.getString("tamaño"));
+                        result.setColmas(rs.getString("color"));
+                        result.setSexmas(rs.getString("sexo"));
+                        result.setFrmas(rs.getString("fecha_registro"));
+
                     }else {
                             result = null;
                     }
+                    cn.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -77,18 +80,19 @@ public class RegistroMascotaDao {
                     "id_imagen,id_dueño,nombre_mascota,tamaño,color,sexo,fecha_registro FROM mascota");
             while (rs.next()){
                 MascotaDto mascot = new MascotaDto();
-                mascot.mascoId = rs.getInt("id_mascota");
-                mascot.espmId = rs.getInt("id_especie");
-                mascot.razamId = rs.getInt("id_raza");
-                mascot.imgmId = rs.getInt("id_imagen");
-                mascot.duemId = rs.getInt("id_dueño");
-                mascot.nommas = rs.getString("nombre_mascota");
-                mascot.tamas = rs.getString("tamaño");
-                mascot.colmas = rs.getString("color");
-                mascot.sexmas = rs.getString("sexo");
-                mascot.frmas = rs.getString("fecha_registro");
+                mascot.setMascoId(rs.getInt("id_mascota"));
+                mascot.setEspmId(rs.getInt("id_especie"));
+                mascot.setRazamId(rs.getInt("id_raza"));
+                mascot.setImgmId(rs.getInt("id_imagen"));
+                mascot.setDuemId(rs.getInt("id_dueño"));
+                mascot.setNommas(rs.getString("nombre_mascota"));
+                mascot.setTamas(rs.getString("tamaño"));
+                mascot.setColmas(rs.getString("color"));
+                mascot.setSexmas(rs.getString("sexo"));
+                mascot.setFrmas(rs.getString("fecha_registro"));
                 result.add(mascot);
             }
+            cn.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

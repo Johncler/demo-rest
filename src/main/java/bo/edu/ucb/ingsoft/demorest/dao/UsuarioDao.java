@@ -1,91 +1,101 @@
 package bo.edu.ucb.ingsoft.demorest.dao;
 
+
 import bo.edu.ucb.ingsoft.demorest.dto.MascotaDto;
+import bo.edu.ucb.ingsoft.demorest.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.Sequence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class UsuarioDao {
-    @Autowired
-    public DataSource dataSource;
 
-    public MascotaDto crearMascota (MascotaDto mascotaDto){
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private SequenceDao sequenceDao;
+
+    public UsuarioDto crearUsuario (UsuarioDto us){
+        us.setUsuarioId(sequenceDao.getPrimaryKeyForTable("us"));
         try {
             Connection con = dataSource.getConnection();
             Statement st = con.createStatement();
-            st.execute( "INSERT INTO mascota VALUES ("
-                    + mascotaDto.mascoId +" , '"
-                    + mascotaDto.espmId +"', '"
-                    + mascotaDto.razamId +"', '"
-                    + mascotaDto.imgmId +"','"
-                    + mascotaDto.duemId +"','"
-                    + mascotaDto.nommas +"','"
-                    + mascotaDto.tamas +"','"
-                    + mascotaDto.colmas +"','"
-                    + mascotaDto.sexmas +"','"
-                    + mascotaDto.frmas +"' ) ");
+            st.execute( "INSERT INTO usuario VALUES ("
+                    + us.getUsuarioId() +" , '"
+                    + us.getNomuser() +"', '"
+                    + us.getPassword() +"') ");
         }catch (Exception ex) {
             ex.printStackTrace();
         }
-        return mascotaDto;
-    }
-    public MascotaDto findMascotaDtoById(Integer mascoId){
-        MascotaDto result = new MascotaDto();
-        try {
-            Connection cn = dataSource.getConnection();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery( "SELECT id_mascota,id_especie,id_raza," +
-                    "id_imagen,id_dueño,nombre_mascota,tamaño,color,sexo,fecha_registro FROM mascota" +
-                    " WHERE id_mascota = " + mascoId);
-            if (rs.next()){
-                result.mascoId = rs.getInt("id_mascota");
-                result.espmId = rs.getInt("id_especie");
-                result.razamId = rs.getInt("id_raza");
-                result.imgmId = rs.getInt("id_imagen");
-                result.duemId = rs.getInt("id_dueño");
-                result.nommas = rs.getString("nombre_mascota");
-                result.tamas = rs.getString("tamaño");
-                result.colmas = rs.getString("color");
-                result.sexmas = rs.getString("sexo");
-                result.frmas = rs.getString("fecha_registro");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return result;
-    }
-    public List<MascotaDto> finAllMascotaDtos(){
-        List<MascotaDto> result = new ArrayList<>();
-        try {
-            Connection cn = dataSource.getConnection();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery( "SELECT id_mascota,id_especie,id_raza," +
-                    "id_imagen,id_dueño,nombre_mascota,tamaño,color,sexo FROM mascota");
-            while (rs.next()){
-                MascotaDto mascot = new MascotaDto();
-                mascot.mascoId = rs.getInt("id_mascota");
-                mascot.espmId = rs.getInt("id_especie");
-                mascot.razamId = rs.getInt("id_raza");
-                mascot.imgmId = rs.getInt("id_imagen");
-                mascot.duemId = rs.getInt("id_dueño");
-                mascot.nommas = rs.getString("nombre_mascota");
-                mascot.tamas = rs.getString("tamaño");
-                mascot.colmas = rs.getString("color");
-                mascot.sexmas = rs.getString("sexo");
-                mascot.frmas = rs.getString("fecha_registro");
-                result.add(mascot);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return result;
+        return us;
     }
 
+    public UsuarioDto usuarioDtoById(Integer usuarioId){
+        UsuarioDto result = new UsuarioDto();
+        try {
+            Connection cn = dataSource.getConnection();
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT usuarioId,nomuser,password FROM usuario" +
+                    "WHERE usuarioId = "+ usuarioId);
+            if (rs.next()) {
+                result.setUsuarioId(rs.getInt("id_usuario"));
+                result.setNomuser(rs.getString("nombre_usuario"));
+                result.setPassword(rs.getString("contraseña"));
+            } else { // si no hay valores de BBDD
+                result = null;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    public UsuarioDto findMascotaDtoById(Integer usuarioId){
+        UsuarioDto result = new UsuarioDto();
+        try {
+            Connection cn = dataSource.getConnection();
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery( "SELECT id_usuario,nombreusuario,contraseña," +
+                    " FROM usuario" +
+                    " WHERE id_usuario = " + usuarioId);
+            if (rs.next()){
+                result.setUsuarioId(rs.getInt("id_usuario"));
+                result.setNomuser(rs.getString("nombre_usuario"));
+                result.setPassword(rs.getString("contraseña"));
+            }else {
+                result = null;
+            }
+            cn.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    public List<UsuarioDao> finAllUsuarioDaos(){
+        List<UsuarioDao> result = new ArrayList<>();
+
+        try {
+            Connection cn = dataSource.getConnection();
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery( "SELECT id_usuario,nombre_usuario,contraseña" +
+                    " FROM usuario");
+            while (rs.next()){
+                UsuarioDto userr = new UsuarioDto();
+                userr.setUsuarioId(rs.getInt("id_mascota"));
+                userr.setNomuser(rs.getString("id_especie"));
+                userr.setPassword(rs.getString("id_raza"));
+                result = null;
+            }
+            cn.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
 }

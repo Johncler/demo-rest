@@ -1,12 +1,13 @@
 package bo.edu.ucb.ingsoft.demorest.dto;
 
 public class ForoDto {
-    public Integer forId;
-    public Integer consfId;
-    public Integer userf;
-    public String  smsf;
-    public String fecf;
+    private Integer forId;
+    private Integer consfId;
+    private Integer userf;
+    private String  smsf;
+    private String fecf;
     public ForoDto(){
 
     }
+
 }

@@ -13,7 +13,7 @@ public class GestionarMascotaBI {
 
     public MascotaDto crearMascota(MascotaDto mascotaDto) {
 
-        return null;
+        return registroMascotaDao.crearMascota(mascotaDto);
     }
 
     public MascotaDto findMascotaDtoById(Integer mascoId) {
