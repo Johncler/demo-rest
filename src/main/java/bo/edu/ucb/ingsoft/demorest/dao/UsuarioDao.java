@@ -1,16 +1,11 @@
 package bo.edu.ucb.ingsoft.demorest.dao;
 
-
-import bo.edu.ucb.ingsoft.demorest.dto.MascotaDto;
 import bo.edu.ucb.ingsoft.demorest.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +18,13 @@ public class UsuarioDao {
     private SequenceDao sequenceDao;
 
     public UsuarioDto crearUsuario (UsuarioDto us){
-        us.setUsuarioId(sequenceDao.getPrimaryKeyForTable("us"));
-        try {
-            Connection con = dataSource.getConnection();
-            Statement st = con.createStatement();
-            st.execute( "INSERT INTO usuario VALUES ("
-                    + us.getUsuarioId() +" , '"
-                    + us.getNomuser() +"', '"
-                    + us.getPassword() +"') ");
+        us.setUsuarioId(sequenceDao.getPrimaryKeyForTable("usuario"));
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement pst = con.prepareStatement("INSERT INTO usuario VALUES (?,?,?)");){
+            pst.setInt(1,us.getUsuarioId());
+            pst.setString(2, us.getNomuser());
+            pst.setString(3, us.getPassword());
+            pst.executeUpdate();
         }catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -41,9 +35,9 @@ public class UsuarioDao {
         UsuarioDto result = new UsuarioDto();
         try {
             Connection cn = dataSource.getConnection();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT usuarioId,nomuser,password FROM usuario" +
-                    "WHERE usuarioId = "+ usuarioId);
+            PreparedStatement pst = cn.prepareStatement("SELECT usuarioId,nomuser,password FROM usuario WHERE usuarioId =? ");
+            pst.setInt(1,usuarioId);
+            ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 result.setUsuarioId(rs.getInt("id_usuario"));
                 result.setNomuser(rs.getString("nombre_usuario"));
@@ -54,48 +48,26 @@ public class UsuarioDao {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
-    }
-    public UsuarioDto findMascotaDtoById(Integer usuarioId){
-        UsuarioDto result = new UsuarioDto();
-        try {
-            Connection cn = dataSource.getConnection();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery( "SELECT id_usuario,nombreusuario,contraseña," +
-                    " FROM usuario" +
-                    " WHERE id_usuario = " + usuarioId);
-            if (rs.next()){
-                result.setUsuarioId(rs.getInt("id_usuario"));
-                result.setNomuser(rs.getString("nombre_usuario"));
-                result.setPassword(rs.getString("contraseña"));
-            }else {
-                result = null;
-            }
-            cn.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         return result;
     }
-    public List<UsuarioDao> finAllUsuarioDaos(){
-        List<UsuarioDao> result = new ArrayList<>();
+    public List<UsuarioDto> finAllUsuarioDtos(){
+        List<UsuarioDto> result = new ArrayList<>();
 
-        try {
-            Connection cn = dataSource.getConnection();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery( "SELECT id_usuario,nombre_usuario,contraseña" +
-                    " FROM usuario");
+        try ( Connection cn = dataSource.getConnection();
+              Statement st = cn.createStatement();
+              ResultSet rs = st.executeQuery( "SELECT id_usuario,nombre_usuario,contraseña FROM usuario");){
+
             while (rs.next()){
                 UsuarioDto userr = new UsuarioDto();
-                userr.setUsuarioId(rs.getInt("id_mascota"));
-                userr.setNomuser(rs.getString("id_especie"));
-                userr.setPassword(rs.getString("id_raza"));
-                result = null;
+                userr.setUsuarioId(rs.getInt("id_usuario"));
+                userr.setNomuser(rs.getString("nombre_usuario"));
+                userr.setPassword(rs.getString("contraseña"));
+                result.add(userr);
             }
-            cn.close();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return result;
+       return result;
     }
 }

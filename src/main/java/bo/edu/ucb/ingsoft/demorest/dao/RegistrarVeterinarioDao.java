@@ -25,21 +25,23 @@ public class RegistrarVeterinarioDao {
         regisDto.setVeterinariaId(sequenceDao.getPrimaryKeyForTable("veterinaria"));
         regisDto.setUsuarioId(sequenceDao.getPrimaryKeyForTable("usuario"));
         //regisDto.setEspeId(sequenceDao.getPrimaryKeyForTable("especialidad"));
-        try {
-            Connection con = dataSource.getConnection();
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement pst1 = con.prepareStatement("INSERT INTO usuario VALUES (?,?,?)");){
 
-            PreparedStatement pst1 = con.prepareStatement("INSERT INTO usuario VALUES (?,?,?)");
             pst1.setInt(1,regisDto.getUsuarioId());
             pst1.setString(2,regisDto.getNomuser());
             pst1.setString(3,regisDto.getPassword());
             pst1.executeUpdate();
 
-            PreparedStatement pst2 = con.prepareStatement("INSERT INTO veterinaria VALUES (?,?,?,?,?)");
+            PreparedStatement pst2 = con.prepareStatement("INSERT INTO veterinaria(id_veterinaria,id_tipo,nombre,direccion,ciudad,telefono,email,horario_atencion) VALUES (?,?,?,?,?,?,?,?)");
             pst2.setInt(1,regisDto.getVeterinariaId());
             pst2.setInt(2,regisDto.getTipoveteId());
-            pst2.setString(3,regisDto.getFonovete());
+            pst2.setString(3,regisDto.getNomvete());
             pst2.setString(4,regisDto.getDirvete());
-            pst2.setString(5,regisDto.getHdavete());
+            pst2.setString(5,regisDto.getDepaveto());
+            pst2.setString(6,regisDto.getFonovete());
+            pst2.setString(7,regisDto.getEmailveto());
+            pst2.setString(8,regisDto.getHdavete());
             pst2.executeUpdate();
             pst2.close();
 
@@ -88,26 +90,30 @@ public class RegistrarVeterinarioDao {
     public List<RegistrarVeterinarioDto> finAllRegistrarVeterinarioDaos(){
         List<RegistrarVeterinarioDto> result = new ArrayList<>();
 
-        try {
-            Connection cn = dataSource.getConnection();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery( "SELECT vo.id_veterinario, vo.id_imagen, vo.nombre, vo.apellido,vo.email, vo.departamento, vo.lugar_formacion, va.id_veterinaria," +
-                    "va.ciudad, va.direccion, va.telefono,va.horario_atencion, u.id_usuario,u.nombre_usuario,u.contraseña" +
-                    "FROM veterinario vo" +
-                    "JOIN veterinaria va ON vo.id_veterinaria = va.id_veterinaria" +
-                    "JOIN usuario u ON vo.id_usuario = u.id_usuario");
+        try (Connection cn = dataSource.getConnection();
+             PreparedStatement pst = cn.prepareStatement("SELECT vo.id_veterinario, vo.id_imagen, vo.nombre, vo.apellido,vo.email, vo.departamento, vo.lugar_formacion, va.id_veterinaria," +
+                     "va.ciudad, va.direccion, va.telefono,va.horario_atencion, u.id_usuario,u.nombre_usuario,u.contraseña" +
+                     "FROM veterinario vo" +
+                     "JOIN veterinaria va ON vo.id_veterinaria = va.id_veterinaria" +
+                     "JOIN usuario u ON vo.id_usuario = u.id_usuario");){
+
+            ResultSet rs = pst.executeQuery();
             while (rs.next()){
                 RegistrarVeterinarioDto registrar = new RegistrarVeterinarioDto();
                 registrar.setVeterId(rs.getInt("id_veterinario"));
-                registrar.setUsuarioId(rs.getInt("id_usuario"));
-                registrar.setVeterinariaId(rs.getInt("id_veterinaria"));
+                registrar.setNomuser(rs.getString("nombre_usuario"));
+                registrar.setPassword(rs.getString("contraseña"));
+                registrar.setNomvete(rs.getString("nombre"));
+                registrar.setDepaveto(rs.getString("ciudad"));
+                registrar.setDirvete(rs.getString("direccion"));
+                registrar.setFonovete(rs.getString("telefono"));
                 registrar.setNomvete(rs.getString("nombre"));
                 registrar.setAppveto(rs.getString("apellido"));
+                registrar.setEmailveto(rs.getString("email"));
                 registrar.setEmailveto(rs.getString("departamento"));
-                registrar.setLugarfveto(rs.getString("lugar_formacio"));
+                registrar.setLugarfveto(rs.getString("lugar_formacion"));
                 result.add(registrar);
             }
-            cn.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

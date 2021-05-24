@@ -16,10 +16,10 @@ public class GenerarUsuarioBI {
     }
 
     public UsuarioDto findUsuarioDtoById(Integer usuarioId){
-        return usuarioDao.findMascotaDtoById(usuarioId);
+        return usuarioDao.usuarioDtoById(usuarioId);
     }
-    public List<UsuarioDao> findAllUsuarioDtos(){
-        return usuarioDao.finAllUsuarioDaos();
+    public List<UsuarioDto> findAllUsuarioDtos(){
+        return usuarioDao.finAllUsuarioDtos();
     }
 
 }

@@ -1,5 +1,7 @@
 package bo.edu.ucb.ingsoft.demorest.dao;
 
+import bo.edu.ucb.ingsoft.demorest.dto.BVettCenterFreeDto;
+import bo.edu.ucb.ingsoft.demorest.dto.BusquedaVeeterinario;
 import bo.edu.ucb.ingsoft.demorest.dto.VeterinarioDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class VettCenterFreeDao {
     @Autowired
     public SequenceDao sequenceDao;
 
-    public VeterinarioDto crearVeterinario (VeterinarioDto veterinarioDto){
+    /*public VeterinarioDto crearVeterinario (VeterinarioDto veterinarioDto){
         veterinarioDto.setVeterId(sequenceDao.getPrimaryKeyForTable("veterinario"));
         try {
             Connection con = dataSource.getConnection();
@@ -40,14 +42,14 @@ public class VettCenterFreeDao {
             ex.printStackTrace();
         }
         return veterinarioDto;
-    }
+    }*/
 
-    public VeterinarioDto findVeterinarioDtoById(Integer veteid){
-        VeterinarioDto result = new VeterinarioDto();
+    /*public BVettCenterFreeDto findVeterinarioDtoById(BusquedaVeeterinario idsearch){
+        BVettCenterFreeDto result = new BVettCenterFreeDto();
         try (Connection cn = dataSource.getConnection();
-             PreparedStatement pst = cn.prepareStatement("SELECT id_veterinario,id_usuario,id_veterinaria,id_imagen,nombre," +
-                     "apellido,email,departamento,lugar_formacion FROM veterinario WHERE veterinario_id ="+ veteid);){
-            pst.setInt(1,veteid);
+             PreparedStatement pst = cn.prepareStatement("SELECT ca.calificacion,ve.nombre,es.especialidad,ve.departamento FROM calificacion ca JOIN usuario uss ON ca.id_usuario = uss.id_usuario JOIN veterinario ve ON uss.id_usuario = ve.id_usuario JOIN veterinario_especialidad vdd ON ve.id_veterinario = vdd.id_veterinario JOIN especialidad es ON vdd.id_especialidad = es.id_especialidad WHERE ve.nombre LIKE ? OR ve.departamento LIKE ?");){
+            pst.setString(1,"%"+idsearch.getNombre() +"%");
+            pst.setString(2,"%"+idsearch.getDeparatamento() +"%");
             ResultSet rs = pst.executeQuery();
             if (rs.next()){
                 result.setVeterId(rs.getInt("id_veterinario"));
@@ -65,30 +67,24 @@ public class VettCenterFreeDao {
             ex.printStackTrace();
         }
         return result;
-    }
+    }*/
 
-    public List<VeterinarioDto> finAllVeterinarioDtos(){
-        List<VeterinarioDto> result = new ArrayList<>();
+    public List<BVettCenterFreeDto> finAllVeterinarioDtos(BusquedaVeeterinario idsearch){
+        List<BVettCenterFreeDto> result = new ArrayList<>();
 
         try (Connection cn = dataSource.getConnection();
-             Statement st = cn.createStatement();
-             ResultSet rs = st.executeQuery("SELECT id_veterinario,id_usuario,id_veterinaria,id_imagen,nombre,apellido,email," +
-                     "departamento,lugar_formacion FROM veterinario");){// WHERE veterinario_id = ?");){
-
+             PreparedStatement pst = cn.prepareStatement("SELECT ca.calificacion,ve.nombre,es.especialidad,ve.departamento FROM calificacion ca JOIN usuario uss ON ca.id_usuario = uss.id_usuario JOIN veterinario ve ON uss.id_usuario = ve.id_usuario JOIN veterinario_especialidad vdd ON ve.id_veterinario = vdd.id_veterinario JOIN especialidad es ON vdd.id_especialidad = es.id_especialidad WHERE ve.nombre LIKE ? OR ve.departamento LIKE ?");){
+            pst.setString(1,"%"+idsearch.getNombre() +"%");
+            pst.setString(2,"%"+idsearch.getDeparatamento() +"%");
+            ResultSet rs = pst.executeQuery();
             while (rs.next()){
-                VeterinarioDto vet = new VeterinarioDto();
-                vet.setVeterId(rs.getInt("id_veterinario"));
-                vet.setUservetoId(rs.getInt("id_usuario"));
-                vet.setVetavoId(rs.getInt("id_veterinaria"));
-                vet.setImgvetiId(rs.getInt("id_imagen"));
-                vet.setNomveto(rs.getString("nombre"));
-                vet.setNomveto(rs.getString("apellido"));
-                vet.setNomveto(rs.getString("email"));
-                vet.setNomveto(rs.getString("departamento"));
-                vet.setNomveto(rs.getString("lugar_formacion"));
+                BVettCenterFreeDto vet = new BVettCenterFreeDto();
+                vet.setCal(rs.getDouble("calificacion"));
+                vet.setNom(rs.getString("nombre"));
+                vet.setEspeci(rs.getString("especialidad"));
+                vet.setDepart(rs.getString("departamento"));
                 result.add(vet);
             }
-            cn.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

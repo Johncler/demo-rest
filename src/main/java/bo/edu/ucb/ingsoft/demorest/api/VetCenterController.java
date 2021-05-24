@@ -16,7 +16,7 @@ public class VetCenterController {
     @Autowired
     private GestionarVetCenter gestionarVetCenter;
 
-    @GetMapping(path = "/veterinario/{veterinarioId}")
+    /*@GetMapping(path = "/veterinario/{veterinarioId}")
     public ResponseDto finVeterinarioDtoById(@PathVariable Integer veterinarioId) {
         VeterinarioDto veterinarioDto = gestionarVetCenter.finVeterinarioDtoById(veterinarioId);
         if (veterinarioDto != null){
@@ -24,23 +24,13 @@ public class VetCenterController {
         }else {
             return new ResponseDto(false,null,"No existe el veterinario con codigo:");
         }
-    }
-    @GetMapping(path = "/veterinario")
-    public ResponseDto finAllVeterinarioDtos(){
+    }*/
+    @PostMapping(path = "/VeterinariB")
+    public ResponseDto finAllVeterinarioDtos(@RequestBody BusquedaVeeterinario buscar) {
 
-        return new ResponseDto(true,gestionarVetCenter.finAllVeterinarioDtos(),null);
+        return new ResponseDto(true, gestionarVetCenter.finAllBVettCenterFreeDtos(buscar), null);
 
-    }
-    @PostMapping(path = "/VetCenter")
-    public ResponseDto crearVeterinario(@RequestBody VeterinarioDto veterinarioDto){
-        if (veterinarioDto.getNomveto() == null || veterinarioDto.getNomveto().trim().equals("")){
-            //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de la mascota debe ser obligatorio" );
-            return new ResponseDto(false,null,"El nombre del veterinario debe ser obligatorio");
-        }
-        if (veterinarioDto.getAppveto() == null || veterinarioDto.getAppveto().trim().equals("")){
-            return new ResponseDto(false,null,"El color debe ser obligatorio");
-        }
-        return new ResponseDto(true,gestionarVetCenter.crearVeterinarioDto(veterinarioDto),"Veterinario Encontrado");
+
     }
 
 }

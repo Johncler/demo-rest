@@ -1,10 +1,9 @@
 package bo.edu.ucb.ingsoft.demorest.api;
 
 import bo.edu.ucb.ingsoft.demorest.bi.GestionarVeterinario;
-import bo.edu.ucb.ingsoft.demorest.dto.*;
-import bo.edu.ucb.ingsoft.demorest.dto.VeterinarioDto;
+import bo.edu.ucb.ingsoft.demorest.dto.RegistrarVeterinarioDto;
+import bo.edu.ucb.ingsoft.demorest.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

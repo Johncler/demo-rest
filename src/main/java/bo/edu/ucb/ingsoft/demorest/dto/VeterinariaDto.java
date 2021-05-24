@@ -4,10 +4,10 @@ public class VeterinariaDto {
     private Integer veterinariaId;
     private Integer tipoveteId;
     private String  nomvete;
-    private String  ciudvete;
+    private String  veteciud;
     private String  dirvete;
     private String  fonovete;
-    private String  emailvete;
+    private String  veteemail;
     private String  hdavete;
     private VeterinariaDto() {
 
@@ -37,12 +37,12 @@ public class VeterinariaDto {
         this.nomvete = nomvete;
     }
 
-    public String getCiudvete() {
-        return ciudvete;
+    public String getVeteciud() {
+        return veteciud;
     }
 
-    public void setCiudvete(String ciudvete) {
-        this.ciudvete = ciudvete;
+    public void setVeteciud(String veteciud) {
+        this.veteciud = veteciud;
     }
 
     public String getDirvete() {
@@ -61,12 +61,12 @@ public class VeterinariaDto {
         this.fonovete = fonovete;
     }
 
-    public String getEmailvete() {
-        return emailvete;
+    public String getVeteemail() {
+        return veteemail;
     }
 
-    public void setEmailvete(String emailvete) {
-        this.emailvete = emailvete;
+    public void setVeteemail(String veteemail) {
+        this.veteemail = veteemail;
     }
 
     public String getHdavete() {
