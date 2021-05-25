@@ -25,7 +25,7 @@ public class VeterinarioController {
             return new ResponseDto(false,null,"El password debe ser obligatorio");
         }
         if (registrarVeterinarioDto.getAppveto() == null || registrarVeterinarioDto.getAppveto().trim().equals("")){
-            return new ResponseDto(false,null,"SMS");
+            return new ResponseDto(false,null,"El apellido es obligatorio");
         }
         if (registrarVeterinarioDto.getDepaveto() == null || registrarVeterinarioDto.getDepaveto().trim().equals("")){
             //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de la mascota debe ser obligatorio" );
@@ -35,7 +35,7 @@ public class VeterinarioController {
             return new ResponseDto(false,null,"La direccion debe ser obligatorio");
         }
         if (registrarVeterinarioDto.getFonovete() == null || registrarVeterinarioDto.getFonovete().trim().equals("")){
-            return new ResponseDto(false,null,"El nombre del telefono debe ser Obligatorio");
+            return new ResponseDto(false,null,"El numero del telefono debe ser Obligatorio");
         }
 
         return new ResponseDto(true,gestionarVeterinario.finVeterinarioDtoById(registrarVeterinarioDto),"Succes");

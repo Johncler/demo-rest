@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class VettCenterFreeDao {
     @Autowired
-    public DataSource dataSource;
+    public DataSource dataSource;//Llamada al datas source
 
     @Autowired
     public SequenceDao sequenceDao;
@@ -68,9 +68,9 @@ public class VettCenterFreeDao {
         }
         return result;
     }*/
-
+    //funncion de busqueda de registros de nombre y por departamento
     public List<BVettCenterFreeDto> finAllVeterinarioDtos(BusquedaVeeterinario idsearch){
-        List<BVettCenterFreeDto> result = new ArrayList<>();
+        List<BVettCenterFreeDto> result = new ArrayList<>();//Array donde se almacenara todos los registros
 
         try (Connection cn = dataSource.getConnection();
              PreparedStatement pst = cn.prepareStatement("SELECT ca.calificacion,ve.nombre,es.especialidad,ve.departamento FROM calificacion ca JOIN usuario uss ON ca.id_usuario = uss.id_usuario JOIN veterinario ve ON uss.id_usuario = ve.id_usuario JOIN veterinario_especialidad vdd ON ve.id_veterinario = vdd.id_veterinario JOIN especialidad es ON vdd.id_especialidad = es.id_especialidad WHERE ve.nombre LIKE ? OR ve.departamento LIKE ?");){
